@@ -15,10 +15,4 @@
     <ProjectReference Include="..\Tours.Core\Tours.Core.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Dtos\" />
-    <Folder Include="Controllers\" />
-    <Folder Include="Public\" />
-  </ItemGroup>
-
 </Project>

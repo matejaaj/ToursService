@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Tours.Api.Mappers;
 using Tours.Infrastructure;
 using Tours.Api.Startup;
 using Tours.Infrastructure.Database;
@@ -9,6 +10,7 @@ builder.Services.AddControllers();
 builder.Services.ConfigureSwagger(builder.Configuration);
 builder.Services.ConfigureAuth();
 builder.Services.ConfigureToursModule();
+builder.Services.AddAutoMapper(typeof(ToursProfile).Assembly);
 
 var app = builder.Build();
 
