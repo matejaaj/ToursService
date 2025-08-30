@@ -11,7 +11,7 @@ public class ToursProfile : Profile
 {
     public ToursProfile()
     {
-        CreateMap<ReviewDto, Review>().ReverseMap();
+        CreateMap<ReviewDto, TourReview>().ReverseMap();
         CreateMap<EquipmentDto, Equipment>().ReverseMap();
 
 
@@ -29,7 +29,7 @@ public class ToursProfile : Profile
             .ReverseMap()
             .ForMember(dest => dest.Unit, opt => opt.MapFrom(src => Enum.Parse<DistanceUnit>(src.Unit, true)));
         //CreateMap<TourCardDto, Tour>().ReverseMap();
-        CreateMap<TourReviewDto, Review>().ReverseMap();
+        CreateMap<TourReviewDto, TourReview>().ReverseMap();
         CreateMap<TourCardDto, Tour>()
             .ReverseMap().ForMember(dest => dest.Distance,
                 opt => opt.MapFrom(src => src.TotalLength.Length + src.TotalLength.Unit.ToString()));

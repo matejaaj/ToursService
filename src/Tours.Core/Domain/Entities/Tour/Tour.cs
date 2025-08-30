@@ -30,10 +30,10 @@ public class Tour : Entity
     public Distance TotalLength { get; private set; }
     public DateTime StatusChangeTime { get; private set; }
     public List<TourDuration> Durations { get; private set; }
-    public List<Checkpoint> Checkpoints { get; private set; }
+    public List<Checkpoint> Checkpoints { get; private set; } = new();
     public List<Object> Objects { get; private set; }
     public List<Equipment> Equipment { get; private set; }
-    public List<Review> Reviews { get; private set; }
+    public List<TourReview> Reviews { get; private set; }
 
     public Tour(string? name, string? description, string? imageData, Difficulty difficulty, List<string> tags, long authorId, Distance totalLength, List<TourDuration> durations, Price price)
     {
@@ -98,7 +98,10 @@ public class Tour : Entity
 
     }
 
-
+    public int GetCheckpointNum()
+    {
+        return Checkpoints?.Count ?? 0;
+    }
 }
 
 

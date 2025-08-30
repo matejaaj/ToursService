@@ -13,7 +13,7 @@ public class ToursContext : DbContext
     public DbSet<Checkpoint> Checkpoints { get; set; }
     public DbSet<Tour> Tours { get; set; }
     public DbSet<TourExecution> TourExecutions { get; set; }
-    public DbSet<Review> Reviews { get; set; }
+    public DbSet<TourReview> Reviews { get; set; }
 
 
     public ToursContext(DbContextOptions<ToursContext> options) : base(options) { }
@@ -80,7 +80,7 @@ public class ToursContext : DbContext
 
     private static void ConfigureReview(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Review>(entity =>
+        modelBuilder.Entity<TourReview>(entity =>
         {
             entity.HasOne<Tour>()
                   .WithMany(t => t.Reviews)
@@ -90,7 +90,10 @@ public class ToursContext : DbContext
     private void ConfigureTourExecution(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<TourExecution>().Property(item => item.Position).HasColumnType("jsonb");
-        modelBuilder.Entity<TourExecution>().Property(item => item.CompletedCheckpoints).HasColumnType("jsonb");
+        modelBuilder.Entity<TourExecution>()
+            .Property(e => e.CompletedCheckpoints)
+            .HasColumnType("jsonb");
+
     }
 }
 

@@ -9,7 +9,7 @@ using Tours.Core.UseCases;
 namespace Tours.Core.Domain.RepositoryInterfaces;
 
 public interface ITourExecutionRepository : ICrudRepository<TourExecution>
-{
-    public TourExecution? GetByTourIdAndTouristId(int tourId, int touristId);
+{ 
+    public TourExecution? GetByTourIdAndTouristId(long tourId, long touristId);
 }
 

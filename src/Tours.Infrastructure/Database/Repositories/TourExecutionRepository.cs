@@ -3,13 +3,13 @@ using Tours.Core.Domain.RepositoryInterfaces;
 
 namespace Tours.Infrastructure.Database.Repositories;
 
-public class TourExecutionDatabaseRepository : CrudDatabaseRepository<TourExecution, ToursContext>, ITourExecutionRepository
+public class TourExecutionRepository : CrudRepository<TourExecution, ToursContext>, ITourExecutionRepository
 {
-    public TourExecutionDatabaseRepository(ToursContext dbContext) : base(dbContext) { }
+    public TourExecutionRepository(ToursContext dbContext) : base(dbContext) { }
     
-    public TourExecution? GetByTourIdAndTouristId(int tourId, int touristId)
+    public TourExecution? GetByTourIdAndTouristId(long tourId, long touristId)
     {
-        return DbContext.TourExecutions.FirstOrDefault(te => te.TourId == tourId && te.TouristId == touristId && te.Status == TourExecutionStatus.ONGOING); //changed it so that it only finds ongoing tours
+        return DbContext.TourExecutions.FirstOrDefault(te => te.TourId == tourId && te.TouristId == touristId); 
     }
 
 

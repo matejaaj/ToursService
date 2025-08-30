@@ -14,15 +14,15 @@ public enum TourExecutionStatus
 
 public class TourExecution : Entity
 {
-    public int TourId { get; init; }
-    public int TouristId { get; init; }
+    public long TourId { get; init; }
+    public long TouristId { get; init; }
     public TourExecutionStatus Status { get; private set; }
     public DateTime LastActivity { get; private set; }
     public double Completion { get; private set; }
     public TouristPosition Position { get; private set; }
-    public ICollection<CompletedCheckpoint> CompletedCheckpoints { get; init; }
+    public List<CompletedCheckpoint> CompletedCheckpoints { get; private set; } = new ();
 
-    public TourExecution(int tourId, int touristId, double longitude, double latitude)
+    public TourExecution(long tourId, long touristId, double longitude, double latitude)
     {
         if (!Validate(longitude, latitude))
         {
@@ -70,11 +70,13 @@ public class TourExecution : Entity
         this.CalculateCompletion(checkpointNum);
     }
 
-    public void CalculateCompletion(int checkpointNum)
+    public double CalculateCompletion(int totalCheckpointNum)
     {
-        this.Completion = Math.Round((((double)CompletedCheckpoints.LongCount() / checkpointNum) * 100), 2);
+        this.Completion = Math.Round((((double)CompletedCheckpoints.LongCount() / totalCheckpointNum) * 100), 2);
         if (this.Completion == 100)
             this.Status = TourExecutionStatus.COMPLETED;
+
+        return this.Completion;
     }
 
     public void SetLastActivity(double longitude, double latitude)
