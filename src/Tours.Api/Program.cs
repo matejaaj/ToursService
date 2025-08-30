@@ -15,7 +15,7 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<ToursContext>();
-    db.Database.Migrate(); 
+    db.Database.Migrate();
 }
 
 if (app.Environment.IsDevelopment())
@@ -26,6 +26,7 @@ if (app.Environment.IsDevelopment())
 
 
 app.UseRouting();
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
