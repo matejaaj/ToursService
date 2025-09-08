@@ -1,50 +1,55 @@
 using AutoMapper;
 using FluentResults;
-using Tours.Core.Dtos;
-using Tours.Core.Public;
-using Tours.Core.Domain.Entities;
+using Tours.Core.UseCases.Interfaces;
+using Tours.Core.Domain.Entities.Tour;
 using Tours.Core.Domain.RepositoryInterfaces;
+
 
 namespace Tours.Core.UseCases
 {
-public class TourService : ITourService
-{
-  private readonly ITourRepository _tourRepository;
-  private readonly ICheckpointRepository _checkpointRepository;
-  private readonly IMapper _mapper;
-
-  public TourService(ITourRepository tourRepository,ICheckpointRepository checkpointRepository, IMapper mapper)
+  public class TourService : ITourService
   {
-    _tourRepository = tourRepository;
-      _checkpointRepository = checkpointRepository;
-    _mapper = mapper;
-  }
+    private readonly ITourRepository _tourRepository;
+    private readonly ICheckpointRepository _checkpointRepository;
+    private readonly IMapper _mapper;
 
-  public Result<TourDto> Create(TourDto tourDto,long userId)
-  {
-    Tour tour = _mapper.Map<Tour>(tourDto);
-    tour.AuthorId = userId;
-    Tour savedTour = _tourRepository.Create(tour);
-    return Result.Ok(_mapper.Map<TourDto>(savedTour));
-  }
-
-    public Result<CheckpointDto> CreateCheckpoint(CheckpointDto checkpointDto, long userId)
+    public TourService(ITourRepository tourRepository, ICheckpointRepository checkpointRepository, IMapper mapper)
     {
-        Tour tour = _tourRepository.GetById(checkpointDto.TourId);
-        if (tour.AuthorId != userId)
-        {
-        return Result.Fail(FailureCode.Forbidden);
-        }
-        Checkpoint checkpoint = _mapper.Map<Checkpoint>(checkpointDto);
-        Checkpoint savedCheckpoint = _checkpointRepository.Create(checkpoint);
-        return Result.Ok(_mapper.Map<CheckpointDto>(savedCheckpoint));
+      _tourRepository = tourRepository;
+      _checkpointRepository = checkpointRepository;
+      _mapper = mapper;
     }
 
-    public Result<List<TourDto>> GetByAuthor(long id)
+    public Result<Tour> Create(Tour tour, long userId)
+    {
+      tour.AuthorId = userId;
+      Tour savedTour = _tourRepository.Create(tour);
+      return Result.Ok(savedTour);
+    }
+
+    public Result<Checkpoint> CreateCheckpoint(Checkpoint checkpoint, long userId)
+    {
+      Tour tour = _tourRepository.GetById(checkpoint.TourId.Value);
+      if (tour.AuthorId != userId)
+      {
+        return Result.Fail(FailureCode.Forbidden);
+      }
+
+      Checkpoint savedCheckpoint = _checkpointRepository.Create(checkpoint);
+      return Result.Ok(savedCheckpoint);
+    }
+
+    public Result<List<Tour>> GetByAuthor(long id)
     {
       List<Tour> tours = _tourRepository.GetByAuthor(id);
-      return Result.Ok(_mapper.Map<List<TourDto>>(tours));
+      return Result.Ok(tours);
     }
+    
+    public  Result<Tour> Get(long id)
+    {
+        return _tourRepository.GetById(id);
+    }
+
   }
 
 

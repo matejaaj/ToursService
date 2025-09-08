@@ -1,30 +1,27 @@
 ﻿using Tours.Core.Domain.Entities;
 using FluentResults;
-using AutoMapper;
 
 namespace Tours.Core.UseCases;
 
-public abstract class CrudService<TDto, TDomain> : BaseService<TDto, TDomain> where TDomain : Entity
+public abstract class CrudService<TDomain>  where TDomain : Entity
 {
     protected readonly ICrudRepository<TDomain> CrudRepository;
 
-    protected CrudService(ICrudRepository<TDomain> crudRepository, IMapper mapper) : base(mapper)
+    protected CrudService(ICrudRepository<TDomain> crudRepository)
     {
         CrudRepository = crudRepository;
     }
 
-    public Result<PagedResult<TDto>> GetPaged(int page, int pageSize)
+    public Result<PagedResult<TDomain>> GetPaged(int page, int pageSize)
     {
-        var result = CrudRepository.GetPaged(page, pageSize);
-        return MapToDto(result);
+        return CrudRepository.GetPaged(page, pageSize);
     }
 
-    public Result<TDto> Get(int id)
+    public Result<TDomain> Get(int id)
     {
         try
         {
-            var result = CrudRepository.Get(id);
-            return MapToDto(result);
+            return CrudRepository.Get(id);
         }
         catch (KeyNotFoundException e)
         {
@@ -32,12 +29,11 @@ public abstract class CrudService<TDto, TDomain> : BaseService<TDto, TDomain> wh
         }
     }
 
-    public virtual Result<TDto> Create(TDto entity)
+    public virtual Result<TDomain> Create(TDomain entity)
     {
         try
         {
-            var result = CrudRepository.Create(MapToDomain(entity));
-            return MapToDto(result);
+            return CrudRepository.Create(entity);
         }
         catch (ArgumentException e)
         {
@@ -45,12 +41,11 @@ public abstract class CrudService<TDto, TDomain> : BaseService<TDto, TDomain> wh
         }
     }
 
-    public virtual Result<TDto> Update(TDto entity)
+    public virtual Result<TDomain> Update(TDomain entity)
     {
         try
         {
-            var result = CrudRepository.Update(MapToDomain(entity));
-            return MapToDto(result);
+            return CrudRepository.Update(entity);
         }
         catch (KeyNotFoundException e)
         {

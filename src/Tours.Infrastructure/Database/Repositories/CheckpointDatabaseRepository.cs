@@ -1,4 +1,4 @@
-using Tours.Core.Domain.Entities;
+using Tours.Core.Domain.Entities.Tour;
 using Tours.Core.Domain.RepositoryInterfaces;
 namespace Tours.Infrastructure.Database.Repositories
 {

@@ -1,4 +1,4 @@
-using Tours.Core.Domain.Entities;
+using Tours.Core.Domain.Entities.Tour;
 using Tours.Core.Domain.RepositoryInterfaces;
 namespace Tours.Infrastructure.Database.Repositories
 {
@@ -23,9 +23,9 @@ namespace Tours.Infrastructure.Database.Repositories
             return _context.Tours.Where(tour => tour.AuthorId == id).ToList();
         }
 
-    public Tour GetById(long id)
-    {
-        return _context.Tours.Find(id);
-    }
+        public Tour GetById(long id)
+        {
+            return _context.Tours.Find(id);
+        }
   }
 }

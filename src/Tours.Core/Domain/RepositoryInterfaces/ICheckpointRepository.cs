@@ -1,4 +1,4 @@
-using Tours.Core.Domain.Entities;
+using Tours.Core.Domain.Entities.Tour;
 namespace Tours.Core.Domain.RepositoryInterfaces
 {
   public interface ICheckpointRepository

@@ -5,14 +5,14 @@ using Tours.Infrastructure.Database.Repositories;
 
 namespace Tours.Infrastructure.Database.Repositories;
 
-public class CrudDatabaseRepository<TEntity, TDbContext> : ICrudRepository<TEntity>
+public class CrudRepository<TEntity, TDbContext> : ICrudRepository<TEntity>
     where TEntity : Entity
     where TDbContext : DbContext
 {
     protected readonly TDbContext DbContext;
     private readonly DbSet<TEntity> _dbSet;
 
-    public CrudDatabaseRepository(TDbContext dbContext)
+    public CrudRepository(TDbContext dbContext)
     {
         DbContext = dbContext;
         _dbSet = DbContext.Set<TEntity>();

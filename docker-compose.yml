@@ -19,6 +19,10 @@ services:
       DATABASE_POOLING: true
     depends_on:
       - db
+    cap_add:
+      - SYS_PTRACE
+    security_opt:
+      - seccomp=unconfined
 
   db:
     image: postgres:16
