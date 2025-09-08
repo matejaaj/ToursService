@@ -2,11 +2,11 @@ using Tours.Core.Domain.Entities.Tour;
 using Tours.Core.Domain.RepositoryInterfaces;
 namespace Tours.Infrastructure.Database.Repositories
 {
-    public class CheckpointDatabaseRepository : ICheckpointRepository
+    public class CheckpointRepository : ICheckpointRepository
     {
         private readonly ToursContext _context;
 
-        public CheckpointDatabaseRepository(ToursContext context)
+        public CheckpointRepository(ToursContext context)
         {
             _context = context;
         }

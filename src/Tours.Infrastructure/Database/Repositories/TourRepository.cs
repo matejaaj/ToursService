@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Tours.Core.Domain.Entities;
+using Tours.Core.Domain.Entities.Tour;
 using Tours.Core.Domain.RepositoryInterfaces;
 
 namespace Tours.Infrastructure.Database.Repositories;
@@ -27,7 +28,8 @@ public class TourRepository : CrudRepository<Tour, ToursContext>, ITourRepositor
 
     public List<Tour> GetByAuthor(long id)
     {
-        return dbContext.Tours.Where(tour => tour.AuthorId == id).ToList();
+        return DbContext.Tours.Where(tour => tour.AuthorId == id).ToList();
     }
+
 }
 

@@ -37,7 +37,7 @@ public static class ToursStartup
         services.AddScoped<ITourReviewRepository, TourReviewRepository>();
         services.AddScoped<ITourRepository, TourRepository>();
         services.AddScoped<ITourExecutionRepository, TourExecutionRepository>();
-        services.AddScoped<ICheckpointRepository, CheckpointDatabaseRepository>();
+        services.AddScoped<ICheckpointRepository, CheckpointRepository>();
 
 
         services.AddDbContext<ToursContext>(opt =>
