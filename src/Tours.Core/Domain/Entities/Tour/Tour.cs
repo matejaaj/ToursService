@@ -26,7 +26,7 @@ public class Tour : Entity
     public List<string> Tags { get; private set; }
     public Price Price { get; private set; }
     public Status Status { get; private set; } = Status.Draft;
-    public long AuthorId { get; private set; }
+    public long AuthorId { get; set; }
     public Distance TotalLength { get; private set; }
     public DateTime StatusChangeTime { get; private set; }
     public List<TourDuration> Durations { get; private set; }

@@ -10,6 +10,9 @@ namespace Tours.Core.UseCases.Interfaces;
 
 public interface ITourService
 {
-    Result<Tour> Get(long id);
+        public Result<Tour> Create(Tour tour, long userId);
+        Result<Checkpoint> CreateCheckpoint(Checkpoint checkpoint, long userId);
+        public Result<List<Tour>> GetByAuthor(long id);
+        public  Result<Tour> Get(long id);
 }
 

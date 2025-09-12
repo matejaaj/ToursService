@@ -8,7 +8,7 @@ namespace Tours.Core.Domain.Entities.Tour;
 
 public class Checkpoint : Entity
 {
-    public long? TourId { get; private set; }
+    public long? TourId { get;  set; }
     public string Name { get; private set; }
     public string Description { get; private set; }
     public string ImageData { get; private set; }

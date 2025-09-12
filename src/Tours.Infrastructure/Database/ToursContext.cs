@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Tours.Core.Domain.Entities;
 using System.Reflection.Metadata;
 using Tours.Core.Domain.Entities.Tour;
 using Tours.Core.Domain.Entities.TourExecution;
@@ -8,13 +9,13 @@ namespace Tours.Infrastructure.Database;
 
 public class ToursContext : DbContext
 {
+    public DbSet<Tour> Tours { get; set; }
+    public DbSet<Checkpoint> Checkpoints { get; set; }
     public DbSet<Equipment> Equipment { get; set; }
     public DbSet<Object> Objects { get; set; }
-    public DbSet<Checkpoint> Checkpoints { get; set; }
-    public DbSet<Tour> Tours { get; set; }
+
     public DbSet<TourExecution> TourExecutions { get; set; }
     public DbSet<TourReview> Reviews { get; set; }
-
 
     public ToursContext(DbContextOptions<ToursContext> options) : base(options) { }
 
@@ -22,13 +23,16 @@ public class ToursContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.HasDefaultSchema("tours");
-
         ConfigureTour(modelBuilder);
-        ConfigureTourExecution(modelBuilder);
         ConfigureCheckpoint(modelBuilder);
+        
+
+        ConfigureTourExecution(modelBuilder);
         ConfigureObject(modelBuilder);
         ConfigureReview(modelBuilder);
     }
+
+
 
     private void ConfigureObject(ModelBuilder modelBuilder)
     {

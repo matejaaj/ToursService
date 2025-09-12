@@ -19,7 +19,8 @@ public class ToursProfile : Profile
             .ReverseMap()
             .ForMember(dest => dest.Equipment, opt => opt.MapFrom(src => src.Equipment));
         //CreateMap<Tour, TourDto>().ForMember(dest => dest.IsPublished, opt => opt.MapFrom(src => !src.IsNotPublished()));
-      //  CreateMap<Tour, TourDto>().ForMember(dest => dest.IsPublished, opt => opt.MapFrom(src => src.IsPublished()));
+        //  CreateMap<Tour, TourDto>().ForMember(dest => dest.IsPublished, opt => opt.MapFrom(src => src.IsPublished()));
+
 
 
         CreateMap<Price, PriceDto>().ReverseMap();

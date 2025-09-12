@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Tours.Core.Domain.Entities;
 using Tours.Core.Domain.Entities.Tour;
 using Tours.Core.Domain.RepositoryInterfaces;
 
@@ -13,7 +14,7 @@ public class TourRepository : CrudRepository<Tour, ToursContext>, ITourRepositor
 {
     public TourRepository(ToursContext dbContext) : base(dbContext) { }
 
-    public Tour Get(long id)
+    public Tour GetById(long id)
     {
         var tour = DbContext.Tours
             .Include(t => t.Checkpoints)
@@ -24,5 +25,11 @@ public class TourRepository : CrudRepository<Tour, ToursContext>, ITourRepositor
 
         return tour;
     }
+
+    public List<Tour> GetByAuthor(long id)
+    {
+        return DbContext.Tours.Where(tour => tour.AuthorId == id).ToList();
+    }
+
 }
 
