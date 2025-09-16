@@ -23,14 +23,14 @@ public class TourExecutionController : BaseApiController
     }
 
 
-    [HttpPut("/{tourExecutionId:long}/update-tourist-location")]
+    [HttpPut("{tourExecutionId:long}/update-tourist-location")]
     public ActionResult<TourExecutionDto> Update([FromBody] TouristPositionDto dto, long tourExecutionId)
     {
         var result = _tourExecutionService.UpdateTouristLocation(tourExecutionId, dto.Latitude, dto.Longitude);
         return CreateMappedResponse<TourExecutionDto, TourExecution>(result);
     }
 
-    [HttpPost("/{tourId:long}")]
+    [HttpPost("{tourId:long}")]
 
     public ActionResult<TourExecutionDto> StartTourExecution([FromBody] TouristPositionDto dto, long tourId)
     {
@@ -39,7 +39,7 @@ public class TourExecutionController : BaseApiController
     }
 
 
-    [HttpPut("/abandon/{tourExecutionId:long}")]
+    [HttpPut("abandon/{tourExecutionId:long}")]
 
     public ActionResult<TourExecutionDto> AbandonTourExecution([FromBody] TouristPositionDto dto, long tourExecutionId)
     {
@@ -47,7 +47,7 @@ public class TourExecutionController : BaseApiController
         return CreateMappedResponse<TourExecutionDto, TourExecution>(result);
     }
 
-    [HttpPut("/complete/{tourExecutionId:long}")]
+    [HttpPut("complete/{tourExecutionId:long}")]
 
     public ActionResult<TourExecutionDto> CompleteTourExectuion([FromBody] TouristPositionDto dto, long tourExecutionId)
     {

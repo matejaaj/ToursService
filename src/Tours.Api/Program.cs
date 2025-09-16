@@ -1,12 +1,24 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Npgsql;
 using Tours.Api.Mappers;
 using Tours.Api.Startup;
 using Tours.Core.UseCases.Interfaces;
 using Tours.Infrastructure;
 using Tours.Infrastructure.Database;
+using Tours.Api.GrpcServices;
 
 var builder = WebApplication.CreateBuilder(args);
+
+
+builder.WebHost.ConfigureKestrel(o =>
+{
+    o.ListenAnyIP(8887, x => x.Protocols = HttpProtocols.Http2); // gRPC
+    o.ListenAnyIP(8080, x => x.Protocols = HttpProtocols.Http1); // REST
+});
+
+
+builder.Services.AddGrpc();
 
 
 builder.Services.AddControllers();
@@ -18,7 +30,6 @@ builder.Services.ConfigureAuth();
 
 builder.Services.ConfigureToursModule();
 builder.Services.AddAutoMapper(typeof(ToursProfile).Assembly);
-
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ICurrentUser, Tours.Api.Authentication.CurrentUser>();
@@ -50,6 +61,10 @@ if (app.Environment.IsDevelopment())
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
+
+
+app.MapGrpcService<TourExecutionGrpcService>();
+
 
 app.MapControllers();
 

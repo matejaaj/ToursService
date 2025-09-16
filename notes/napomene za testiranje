@@ -7,7 +7,7 @@ treba ti person id
 
 za testiranje start prvo izbrisi tourexecution sa tourist id 3005 i napravi novi sa userom 3005
 
-
+go run main.go
 
 1000	"ana.admin"	"pass123"	"ana.admin@example.com"	"Administrator"	false
 1002	"ceca.author"	"pass123"	"ceca.author@example.com"	"Author"	false
