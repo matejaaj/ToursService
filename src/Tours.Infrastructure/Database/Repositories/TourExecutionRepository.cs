@@ -12,7 +12,12 @@ public class TourExecutionRepository : CrudRepository<TourExecution, ToursContex
         return DbContext.TourExecutions.FirstOrDefault(te => te.TourId == tourId && te.TouristId == touristId); 
     }
 
-
+    public List<TourExecution> GetAllByTouristId(long touristId)
+    {
+        return DbContext.TourExecutions
+            .Where(te => te.TouristId == touristId)
+            .ToList();
+    }
 
 }
 

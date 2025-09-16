@@ -46,6 +46,9 @@ public class ToursProfile : Profile
 
         CreateMap<CheckpointDto, Checkpoint>().ReverseMap();
 
+        CreateMap<CompletedCheckpoint, CompletedCheckpointDto>().ReverseMap();
+
+
     }
 
 }

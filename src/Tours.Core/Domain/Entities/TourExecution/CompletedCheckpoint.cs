@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 namespace Tours.Core.Domain.Entities.TourExecution;
 public class CompletedCheckpoint : ValueObject
 {
-    public int CheckpointId { get; init; }
+    public long CheckpointId { get; init; }
     public DateTime CompletionTime { get; init; }
 
     [JsonConstructor]
-    public CompletedCheckpoint(int checkpointId, DateTime completionTime)
+    public CompletedCheckpoint(long checkpointId, DateTime completionTime)
     {
         CheckpointId = checkpointId;
         CompletionTime = completionTime;

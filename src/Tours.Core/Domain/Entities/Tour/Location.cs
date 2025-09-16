@@ -1,75 +1,65 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
-namespace Tours.Core.Domain.Entities.Tour;
-public class Location : ValueObject
+namespace Tours.Core.Domain.Entities.Tour
 {
-    public double Latitude { get; }
-    public double Longitude { get; }
-    public string Country { get; }
-    public string City { get; }
-
-    [JsonConstructor]
-    public Location(double latitude, double longitude, string country, string city)
+    public class Location : ValueObject
     {
-        Latitude = latitude;
-        Longitude = longitude;
-        Country = country;
-        City = city;
-        Validate();
-    }
+        private const double EarthRadiusMeters = 6_371_000;
 
-    private void Validate()
-    {
-        if (Latitude < -90 || Latitude > 90) throw new ArgumentException("Invalid Latitude.");
-        if (Longitude < -180 || Longitude > 180) throw new ArgumentException("Invalid Longitude.");
-        if (string.IsNullOrWhiteSpace(Country)) throw new ArgumentException("Invalid Country.");
-        if (string.IsNullOrWhiteSpace(City)) throw new ArgumentException("Invalid City.");
-    }
+        public double Latitude { get; }
+        public double Longitude { get; }
+        public string Country { get; }
+        public string City { get; }
 
-    protected override IEnumerable<object> GetEqualityComponents()
-    {
-        yield return Longitude;
-        yield return Latitude;
-        yield return City;
-        yield return Country;
-    }
+        [JsonConstructor]
+        public Location(double latitude, double longitude, string country, string city)
+        {
+            Latitude = latitude;
+            Longitude = longitude;
+            Country = country;
+            City = city;
+            Validate();
+        }
 
-    public string ToString()
-    {
-        return $"{City}, {Country}";
-    }
+        public bool IsNearby(double latitude, double longitude, double thresholdMeters = 10)
+        {
+            return DistanceTo(latitude, longitude) <= thresholdMeters;
+        }
 
-    public double CalculateDistance(double latitude, double longitude)
-    {
-        const double R = 6371; // Poluprečnik Zemlje u kilometrima
-        double dLat = DegreesToRadians(Latitude - latitude);
-        double dLon = DegreesToRadians(Longitude - longitude);
+        public double DistanceTo(double latitude, double longitude)
+        {
+            double ToRad(double deg) => deg * Math.PI / 180.0;
 
-        // Haversine formula
-        double a = Math.Sin(dLat / 2) * Math.Sin(dLat / 2) +
-                   Math.Cos(DegreesToRadians(latitude)) * Math.Cos(DegreesToRadians(Latitude)) *
-                   Math.Sin(dLon / 2) * Math.Sin(dLon / 2);
-        double c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
+            var dLat = ToRad(latitude - Latitude);
+            var dLon = ToRad(longitude - Longitude);
 
-        return R * c; // Rezultat u kilometrima
-    }
+            var lat1 = ToRad(Latitude);
+            var lat2 = ToRad(latitude);
 
-    public static double DegreesToRadians(double degrees)
-    {
-        return degrees * Math.PI / 180;
-    }
-    public static double GetTolerance()
-    {
-        return 0.02;
-    }
+            var a = Math.Sin(dLat / 2) * Math.Sin(dLat / 2) +
+                    Math.Cos(lat1) * Math.Cos(lat2) *
+                    Math.Sin(dLon / 2) * Math.Sin(dLon / 2);
 
-    public bool IsLocationSame(Location location)
-    {
-        return CalculateDistance(location.Latitude, location.Longitude) <= GetTolerance();
+            var c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
+            return EarthRadiusMeters * c;
+        }
+
+        private void Validate()
+        {
+            if (Latitude < -90 || Latitude > 90) throw new ArgumentException("Invalid Latitude.");
+            if (Longitude < -180 || Longitude > 180) throw new ArgumentException("Invalid Longitude.");
+            if (string.IsNullOrWhiteSpace(Country)) throw new ArgumentException("Invalid Country.");
+            if (string.IsNullOrWhiteSpace(City)) throw new ArgumentException("Invalid City.");
+        }
+
+        protected override IEnumerable<object> GetEqualityComponents()
+        {
+            yield return Longitude;
+            yield return Latitude;
+            yield return City;
+            yield return Country;
+        }
     }
 }

@@ -8,12 +8,16 @@ public interface ITourExecutionService
 
     public TourExecution? GetByTourIdAndTouristId(long tourId, long touristId);
 
+    public Result<List<TourExecution>> GetAllByTouristId(long touristId);
+
     public Result<TourExecution> UpdateTouristLocation(long tourExecutionId, double latitude, double longitude);
 
     public Result<TourExecution> StartTourExecution(long tourId, double latitude, double longitude);
 
-    public Result<TourExecution> AbandonTourExecution(long tourId, double latitude, double longitude);
+    public Result<TourExecution> AbandonTourExecution(long tourExecutionId, double latitude, double longitude);
 
-    public Result<TourExecution> CompleteTourExecution(long tourId, double latitude, double longitude);
+    public Result<TourExecution> CompleteTourExecution(long tourExecutionId, double latitude, double longitude);
+
+
 }
 

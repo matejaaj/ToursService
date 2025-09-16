@@ -27,33 +27,54 @@ public class TourExecutionService : CrudService<TourExecution>, ITourExecutionSe
         return _tourExecutionRepository.GetByTourIdAndTouristId(tourId, touristId);
     }
 
+    public Result<List<TourExecution>> GetAllByTouristId(long touristId)
+    {
+        if (_currentUserContext.PersonId != touristId)
+        {
+            return Result.Fail(FailureCode.Forbidden)
+                .WithError("You cannot access executions of another tourist.");
+        }
+
+        var executions = _tourExecutionRepository.GetAllByTouristId(touristId);
+        return Result.Ok(executions);
+    }
+
+
     public Result<TourExecution> UpdateTouristLocation(long tourExecutionId, double latitude, double longitude)
     {
-        if(!ValidateLocation(latitude, longitude))
+        if (!ValidateLocation(latitude, longitude))
         {
             return Result.Fail(FailureCode.InvalidArgument);
         }
 
         var tourExecution = _tourExecutionRepository.Get(tourExecutionId);
-        if (tourExecution == null)
-        {
-            return Result.Fail(FailureCode.NotFound);
-        }
+        if (tourExecution == null) return Result.Fail(FailureCode.NotFound);
 
         if (tourExecution.TouristId != _currentUserContext.PersonId)
         {
-            return Result.Fail(FailureCode.Forbidden).WithError("You cannon update position for another user");
+            return Result.Fail(FailureCode.Forbidden).WithError("You cannot update position for another user");
         }
 
         if (tourExecution.Status != TourExecutionStatus.ONGOING)
         {
             return Result.Fail(FailureCode.Forbidden).WithError("You must start the tour first.");
         }
-        tourExecution.SetLastActivity(longitude, latitude);
+
+
+        var tourResult = _tourService.Get(tourExecution.TourId);
+        var tour = tourResult.Value;
+        if (tour == null)
+        {
+            return Result.Fail(FailureCode.NotFound);
+        }
+
+        var checkpoints = tour.Checkpoints;
+        tourExecution.TryCompleteNearestCheckpoint(checkpoints, latitude, longitude, thresholdMeters: 10);
+
 
         return _tourExecutionRepository.Update(tourExecution);
-
     }
+
 
     public Result<TourExecution> StartTourExecution(long tourId, double latitude, double longitude)
     {
@@ -84,7 +105,67 @@ public class TourExecutionService : CrudService<TourExecution>, ITourExecutionSe
         return _tourExecutionRepository.Create(newExecution);
     }
 
-    
+    public Result<TourExecution> AbandonTourExecution(long tourExecutionId, double latitude, double longitude)
+    {
+        TourExecution tourExecution;
+        try
+        {
+            tourExecution = _tourExecutionRepository.Get(tourExecutionId);
+        }
+        catch (KeyNotFoundException)
+        {
+            return Result.Fail(FailureCode.NotFound);
+        }
+
+        if (tourExecution.TouristId != _currentUserContext.PersonId)
+        {
+            return Result.Fail(FailureCode.Forbidden)
+                .WithError("You cannot abandon a tour for another user");
+        }
+
+        try
+        {
+            tourExecution.AbandonTour(latitude, longitude);
+            return _tourExecutionRepository.Update(tourExecution);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return Result.Fail(FailureCode.Forbidden).WithError(ex.Message);
+        }
+    }
+
+
+    public Result<TourExecution> CompleteTourExecution(long tourExecutionId, double latitude, double longitude)
+    {
+        TourExecution tourExecution;
+        try
+        {
+            tourExecution = _tourExecutionRepository.Get(tourExecutionId);
+        }
+        catch (KeyNotFoundException)
+        {
+            return Result.Fail(FailureCode.NotFound);
+        }
+
+        if (tourExecution.TouristId != _currentUserContext.PersonId)
+        {
+            return Result.Fail(FailureCode.Forbidden)
+                .WithError("You cannot complete a tour for another user");
+        }
+
+        try
+        {
+            tourExecution.CompleteTour(latitude, longitude);
+            return _tourExecutionRepository.Update(tourExecution);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return Result.Fail(FailureCode.Forbidden).WithError(ex.Message);
+        }
+    }
+
+
+
 
     private bool ValidateLocation(double latitude, double longitude)
     {

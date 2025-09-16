@@ -11,5 +11,7 @@ public class TourExecutionDto
     public double Longitude { get; set; }
     public double Latitude { get; set; }
 
+    public List<CompletedCheckpointDto> CompletedCheckpoints { get; set; } = new();
+
     public TourExecutionDto() { }
 }

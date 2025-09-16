@@ -11,5 +11,7 @@ namespace Tours.Core.Domain.RepositoryInterfaces;
 public interface ITourExecutionRepository : ICrudRepository<TourExecution>
 { 
     public TourExecution? GetByTourIdAndTouristId(long tourId, long touristId);
+
+    List<TourExecution> GetAllByTouristId(long touristId);
 }
 
