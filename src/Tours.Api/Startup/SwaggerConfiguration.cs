@@ -63,7 +63,8 @@ public static class SwaggerConfiguration
             setup.AddSecurityRequirement(new OpenApiSecurityRequirement
             {
                 { roleScheme, Array.Empty<string>() },
-                { userIdScheme, Array.Empty<string>() }
+                { userIdScheme, Array.Empty<string>() },
+                { personIdScheme, Array.Empty<string>() }
             });
         });
 

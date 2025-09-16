@@ -44,32 +44,4 @@ public class Checkpoint : Entity
 
     }
 
-
-
-
-    public void Update(Checkpoint checkpoint)
-    {
-        this.Name = checkpoint.Name;
-        this.Description = checkpoint.Description;
-        this.ImageData = checkpoint.ImageData;
-        this.Location = checkpoint.Location;
-    }
-
-    public double GetCheckpointDistance(double longitude, double latitude)
-    {
-        return Location.CalculateDistance(longitude, latitude);
-
-    }
-
-
-    internal bool IsNearBy(double latitude, double longitude, double maxRadiusKm)
-    {
-        double distance = GetCheckpointDistance(latitude, longitude);
-        if (distance <= maxRadiusKm)
-        {
-            return true;
-        }
-
-        return false;
-    }
 }

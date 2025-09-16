@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Tours.Core.Domain.Entities.Tour;
 
 namespace Tours.Core.Domain.Entities.TourExecution;
 public enum TourExecutionStatus
@@ -22,6 +23,7 @@ public class TourExecution : Entity
     public TouristPosition Position { get; private set; }
     public List<CompletedCheckpoint> CompletedCheckpoints { get; private set; } = new ();
 
+
     public TourExecution(long tourId, long touristId, double longitude, double latitude)
     {
         if (!Validate(longitude, latitude))
@@ -39,35 +41,83 @@ public class TourExecution : Entity
 
     public TourExecution() { }
 
-    public bool Validate(double longitude, double latitude)
+    public bool Validate(double latitude, double longitude)
     {
         return longitude is >= -180 and <= 180 && latitude is >= -90 and <= 90;
     }
 
-    public void Finalize(string status)
+
+    public void CompleteTour(double latitude, double longitude)
     {
-        if (Enum.TryParse<TourExecutionStatus>(status, true, out var parsedStatus))
+        EnsureOngoing();        
+        EnsureCompletionReady();
+
+        this.Status = TourExecutionStatus.COMPLETED;
+        this.Completion = 100;
+
+        SetLastActivity(longitude, latitude);
+    }
+
+
+    public void AbandonTour(double latitude, double longitude)
+    {
+        EnsureOngoing(); 
+
+        this.Status = TourExecutionStatus.ABANDONED;
+        SetLastActivity(longitude, latitude);
+    }
+
+    private void EnsureOngoing()
+    {
+        if (this.Status != TourExecutionStatus.ONGOING)
         {
-            Status = parsedStatus;
-            LastActivity = DateTime.UtcNow;
-        }
-        else
-        {
-            throw new ArgumentException($"Invalid status value: {status}");
+            throw new InvalidOperationException("Tour must be ongoing to complete/abandon.");
         }
     }
 
-    public void CompleteCheckpoint(int checkpointId, int checkpointNum)
+    private void EnsureCompletionReady()
     {
-        foreach (CompletedCheckpoint check in CompletedCheckpoints)
+        if (this.Completion != 100)
         {
-            if (check.CheckpointId == checkpointId)
-                return;
+            throw new InvalidOperationException("Tour cannot be completed unless progress is 100%.");
         }
-        LastActivity = DateTime.UtcNow;
-        CompletedCheckpoint checkpoint = new CompletedCheckpoint(checkpointId, DateTime.UtcNow);
-        CompletedCheckpoints.Add(checkpoint);
-        this.CalculateCompletion(checkpointNum);
+    }
+
+
+    public bool TryCompleteNearestCheckpoint(
+        IEnumerable<Checkpoint> checkpoints,
+        double latitude,
+        double longitude,
+        double thresholdMeters = 10)
+    {
+        EnsureOngoing();
+        SetLastActivity(longitude, latitude); 
+
+        var pending = checkpoints
+            .Where(cp => !CompletedCheckpoints.Any(c => c.CheckpointId == cp.Id))
+            .ToList();
+
+        if (!pending.Any()) return false;
+
+        var best = pending
+            .Select(cp => new
+            {
+                Cp = cp,
+                Dist = cp.Location.DistanceTo(latitude, longitude)
+            })
+            .OrderBy(x => x.Dist)
+            .First();
+
+        if (!best.Cp.Location.IsNearby(latitude, longitude, thresholdMeters))
+            return false;
+
+        CompletedCheckpoints.Add(new CompletedCheckpoint(best.Cp.Id, DateTime.UtcNow));
+        CalculateCompletion(checkpoints.Count());
+
+        if (Completion == 100)
+            Status = TourExecutionStatus.COMPLETED;
+
+        return true;
     }
 
     public double CalculateCompletion(int totalCheckpointNum)
@@ -84,4 +134,6 @@ public class TourExecution : Entity
         this.LastActivity = DateTime.UtcNow;
         this.Position = new TouristPosition(longitude, latitude);
     }
+
+
 }
