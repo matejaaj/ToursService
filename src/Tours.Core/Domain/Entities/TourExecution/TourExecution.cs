@@ -84,4 +84,6 @@ public class TourExecution : Entity
         this.LastActivity = DateTime.UtcNow;
         this.Position = new TouristPosition(longitude, latitude);
     }
+
+
 }
