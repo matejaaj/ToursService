@@ -30,6 +30,18 @@ public class TourRepository : CrudRepository<Tour, ToursContext>, ITourRepositor
     {
         return DbContext.Tours.Where(tour => tour.AuthorId == id).ToList();
     }
+    public Tour GetByIdWithReviews(long id)
+    {
+        var tour = DbContext.Tours
+            .Include(t => t.Checkpoints)
+            .Include(t => t.Reviews)
+            .FirstOrDefault(t => t.Id == id);
+
+        if (tour == null)
+            throw new KeyNotFoundException("Not found: " + id);
+
+        return tour;
+    }
 
 }
 

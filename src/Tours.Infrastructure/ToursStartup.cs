@@ -25,6 +25,8 @@ public static class ToursStartup
         services.AddScoped<ITourService, TourService>();
         services.AddScoped<ITourExecutionService, TourExecutionService>();
         services.AddScoped<ITourReviewService, TourReviewService>();
+        services.AddScoped<ITourPaymentService, TourPaymentService>();
+
 
     }
 

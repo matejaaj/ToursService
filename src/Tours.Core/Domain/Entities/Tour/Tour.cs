@@ -102,6 +102,11 @@ public class Tour : Entity
     {
         return Checkpoints?.Count ?? 0;
     }
+
+    public bool IsPublished()
+    {
+        return Status == Status.Published;
+    }
 }
 
 

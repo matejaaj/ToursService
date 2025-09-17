@@ -6,5 +6,6 @@ namespace Tours.Core.Domain.RepositoryInterfaces
     public Tour Create(Tour tour);
     public Tour GetById(long id);
     public List<Tour> GetByAuthor(long id);
+    Tour GetByIdWithReviews(long tourId);
   }
 }

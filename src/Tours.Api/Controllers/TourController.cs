@@ -8,13 +8,12 @@ namespace Tours.Api.Controllers
   [ApiController]
   [Route("api/tours")]
   [AuthorizeRole("Author")]
-  public class AuthenticationController : BaseApiController
+  public class TourController : BaseApiController
   {
     private readonly ITourService tourService;
+    
 
-    private readonly IMapper mapper;
-
-    public AuthenticationController(ITourService tourService, IMapper mapper) : base(mapper)
+    public TourController(ITourService tourService, IMapper mapper) : base(mapper)
     {
       this.tourService = tourService;
     }
@@ -22,7 +21,7 @@ namespace Tours.Api.Controllers
     [HttpPost]
     public ActionResult<TourDto> Create([FromBody] TourDto tourDto)
     {
-      Tour tour = mapper.Map<Tour>(tourDto);
+      Tour tour = Mapper.Map<Tour>(tourDto);
       var userId = long.Parse(HttpContext.Request.Headers["X-User-Id"]);
       var result = tourService.Create(tour,userId);
       return CreateMappedResponse<TourDto, Tour>(result);
@@ -38,7 +37,7 @@ namespace Tours.Api.Controllers
     [HttpPost("checkpoint")]
     public ActionResult<CheckpointDto> CreateCheckpoint([FromBody] CheckpointDto checkpointDto)
     {
-      Checkpoint checkpoint = mapper.Map<Checkpoint>(checkpointDto);
+      Checkpoint checkpoint = Mapper.Map<Checkpoint>(checkpointDto);
       var userId = long.Parse(HttpContext.Request.Headers["X-User-Id"]);
       var result = tourService.CreateCheckpoint(checkpoint,userId);
       return CreateMappedResponse<CheckpointDto, Checkpoint>(result);

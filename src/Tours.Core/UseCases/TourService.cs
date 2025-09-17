@@ -12,10 +12,12 @@ namespace Tours.Core.UseCases
     private readonly ITourRepository _tourRepository;
     private readonly ICheckpointRepository _checkpointRepository;
     private readonly IMapper _mapper;
+    private readonly ITourPaymentService _tourPaymentService;
 
-    public TourService(ITourRepository tourRepository, ICheckpointRepository checkpointRepository, IMapper mapper)
+    public TourService(ITourRepository tourRepository, ICheckpointRepository checkpointRepository, IMapper mapper, ITourPaymentService tourPaymentService)
     {
       _tourRepository = tourRepository;
+      _tourPaymentService = tourPaymentService;
       _checkpointRepository = checkpointRepository;
       _mapper = mapper;
     }
@@ -50,6 +52,28 @@ namespace Tours.Core.UseCases
         return _tourRepository.GetById(id);
     }
 
+    public Result<Tour> GetPublished(long tourId)
+    {
+      Tour tour = _tourRepository.GetById(tourId);
+      if(tour.IsPublished())
+        return  Result.Ok(tour);
+      return Result.Fail(FailureCode.NotFound);
+    }
+    public Result<Tour> GetById(long userId, long tourId)
+    {
+      Tour  tour = _tourRepository.GetByIdWithReviews(tourId);
+      if (_tourPaymentService.HasUserBoughtTour(userId, tourId).Result)
+      {
+        return Result.Ok(tour);
+      }
+      else
+      {
+        Checkpoint firstCp = tour.Checkpoints.First();
+        tour.Checkpoints.Clear();
+        tour.Checkpoints.Add(firstCp);
+        return tour;
+      }
+    }
   }
 
 

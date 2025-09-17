@@ -23,7 +23,7 @@ builder.Services.AddGrpc();
 
 builder.Services.AddControllers();
 builder.Services.ConfigureSwagger(builder.Configuration);
-
+builder.Services.AddHttpClient();
 
 builder.Services.ConfigureAuth();
 
