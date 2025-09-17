@@ -14,5 +14,7 @@ public interface ITourService
         Result<Checkpoint> CreateCheckpoint(Checkpoint checkpoint, long userId);
         public Result<List<Tour>> GetByAuthor(long id);
         public  Result<Tour> Get(long id);
+        Result<Tour> GetPublished(long tourId);
+        Result<Tour> GetById(long userId, long tourId);
 }
 

@@ -17,6 +17,9 @@ services:
       DATABASE_PASSWORD: secret
       DATABASE_INTEGRATED_SECURITY: false
       DATABASE_POOLING: true
+      PAYMENT_API_URL: http://host.docker.internal:8087/api/payment/purchaseToken/
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     depends_on:
       - db
     cap_add:

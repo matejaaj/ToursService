@@ -13,6 +13,8 @@ public class ToursProfile : Profile
     {
         CreateMap<ReviewDto, TourReview>().ReverseMap();
         CreateMap<EquipmentDto, Equipment>().ReverseMap();
+        CreateMap<Tour, TouristTourPreviewDto>().ReverseMap();
+
 
 
         CreateMap<TourDto, Tour>().ForMember(dest => dest.Equipment, opt => opt.Ignore())
@@ -45,6 +47,8 @@ public class ToursProfile : Profile
             .ForMember(dest => dest.Latitude, opt => opt.MapFrom(src => src.Position.Latitude));
 
         CreateMap<CheckpointDto, Checkpoint>().ReverseMap();
+        CreateMap<LocationDto, Location>().ReverseMap();
+
 
     }
 
